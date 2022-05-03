@@ -1,0 +1,13 @@
+build
+node_modules
+.DS_Store
+yarn.lock
+.vscode
+artifacts
+cache
+.env
+.openzeppelin
+*.log
+flatten
+scripts/*.json
+bak
