@@ -16,24 +16,27 @@ describe("ERC721", () => {
         const ERC721 = await ethers.getContractFactory("ERC721PsiMock")
 
         token = await ERC721.deploy("ERC721 Name", "ERC721 Symbol")
-        await token.safeMint(alice.address, 1)
+        await token.safeMint(alice.address, 10)
     })
 
     it("Check token balance", async () => {
-        expect(await token.balanceOf(alice.address)).to.eq(1)
+        expect(await token.balanceOf(alice.address)).to.eq(10)
+        expect(await token.balanceOf(bob.address)).to.eq(0)
     })
 
     it("Transfer token to destination account", async () => {
-        await token.connect(alice).transferFrom(alice.address, bob.address, 1)
+        await token.connect(alice).transferFrom(alice.address, bob.address, 3)
+        expect(await token.ownerOf(3)).to.eq(bob.address)
+        expect(await token.balanceOf(alice.address)).to.eq(9)
         expect(await token.balanceOf(bob.address)).to.eq(1)
     })
 
     it("Transfer emits event", async () => {
-        await expect(token.connect(alice).transferFrom(alice.address, bob.address, 1)).to.emit(token, "Transfer").withArgs(alice.address, bob.address, 1)
+        await expect(token.connect(alice).transferFrom(alice.address, bob.address, 3)).to.emit(token, "Transfer").withArgs(alice.address, bob.address, 3)
     })
 
     it("Can not transfer the wrong token id", async () => {
-        await expect(token.connect(alice).transferFrom(alice.address, bob.address, 2)).to.be.reverted
+        await expect(token.connect(alice).transferFrom(alice.address, bob.address, 11)).to.be.reverted
     })
 
     it("Can not transfer from empty account", async () => {
@@ -41,6 +44,6 @@ describe("ERC721", () => {
     })
 
     it("Calls totalSupply on Token contract", async () => {
-        expect(await token.totalSupply()).to.equal(1)
+        expect(await token.totalSupply()).to.equal(10)
     })
 })
