@@ -24,20 +24,20 @@ describe("ERC721", () => {
     })
 
     it("Transfer token to destination account", async () => {
-        await token.connect(alice).transfer(bob.address, 1)
+        await token.connect(alice).safeTransfer(bob.address, 1)
         expect(await token.balanceOf(bob.address)).to.eq(1)
     })
 
     it("Transfer emits event", async () => {
-        await expect(token.connect(alice).transfer(bob.address, 1)).to.emit(token, "Transfer").withArgs(alice.address, bob.address, 1)
+        await expect(token.connect(alice).safeTransfer(bob.address, 1)).to.emit(token, "Transfer").withArgs(alice.address, bob.address, 1)
     })
 
-    it("Can not transfer wrong token id", async () => {
-        await expect(token.connect(alice).transfer(bob.address, 2)).to.be.reverted
+    it("Can not transfer the wrong token id", async () => {
+        await expect(token.connect(alice).safeTransfer(bob.address, 2)).to.be.reverted
     })
 
     it("Can not transfer from empty account", async () => {
-        await expect(token.connect(bob).transfer(alice.address, 1)).to.be.reverted
+        await expect(token.connect(bob).safeTransfer(alice.address, 1)).to.be.reverted
     })
 
     it("Calls totalSupply on Token contract", async () => {
